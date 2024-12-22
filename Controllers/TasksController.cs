@@ -27,6 +27,16 @@ namespace YourNamespace.Controllers
 
             foreach (var task in tasks)
             {
+                if (string.IsNullOrWhiteSpace(task.Name) || task.Name.Length > 100)
+                {
+                    return BadRequest(new { Message = $"Nameが無効です（100文字以下で入力してください）。Task: {task.Name}" });
+                }
+
+                if (!string.IsNullOrEmpty(task.Schedule) && task.Schedule.Length > 10)
+                {
+                    return BadRequest(new { Message = $"Scheduleが無効です（10文字以下で入力してください）。Task: {task.Schedule}" });
+                }
+
                 task.CreateDate = DateTime.Now;
                 task.UpdateDate = DateTime.Now;
                 _context.Tasks.Add(task);
@@ -51,6 +61,16 @@ namespace YourNamespace.Controllers
             if (existingTask == null)
             {
                 return NotFound(new { Message = "Task not found." });
+            }
+
+            if (string.IsNullOrWhiteSpace(task.Name) || task.Name.Length > 100)
+            {
+                return BadRequest(new { Message = "Nameが無効です（100文字以下で入力してください）。" });
+            }
+
+            if (!string.IsNullOrEmpty(task.Schedule) && task.Schedule.Length > 10)
+            {
+                return BadRequest(new { Message = "Scheduleが無効です（10文字以下で入力してください）。" });
             }
 
             existingTask.Name = task.Name;

@@ -7,7 +7,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("MyCorsPolicy", builder =>
     {
-        builder.WithOrigins("https://your-frontend-url1.com", "https://your-frontend-url2.com")
+        builder.WithOrigins("https://green-island-06327a400.4.azurestaticapps.net/*")
             .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE")
             .WithHeaders("Content-Type");
     });
