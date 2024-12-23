@@ -7,7 +7,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("MyCorsPolicy", builder =>
     {
-        builder.WithOrigins("https://green-island-06327a400.4.azurestaticapps.net/*")
+        builder.WithOrigins("https://green-island-06327a400.4.azurestaticapps.net")
             .WithMethods("GET", "POST", "PUT", "PATCH", "DELETE")
             .WithHeaders("Content-Type");
     });

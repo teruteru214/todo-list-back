@@ -4,7 +4,7 @@ using Tasks.Data;
 using Tasks.Models;
 using System.Text.Json;
 
-namespace YourNamespace.Controllers
+namespace Tasks.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -27,23 +27,12 @@ namespace YourNamespace.Controllers
 
             foreach (var task in tasks)
             {
-                if (string.IsNullOrWhiteSpace(task.Name) || task.Name.Length > 100)
-                {
-                    return BadRequest(new { Message = $"Nameが無効です（100文字以下で入力してください）。Task: {task.Name}" });
-                }
-
-                if (!string.IsNullOrEmpty(task.Schedule) && task.Schedule.Length > 10)
-                {
-                    return BadRequest(new { Message = $"Scheduleが無効です（10文字以下で入力してください）。Task: {task.Schedule}" });
-                }
-
                 task.CreateDate = DateTime.Now;
-                task.UpdateDate = DateTime.Now;
+                task.UpdateDate = null;
                 _context.Tasks.Add(task);
             }
 
             await _context.SaveChangesAsync();
-
             return Ok(new { Message = "複数のタスクが正常に作成されました。" });
         }
 
@@ -60,17 +49,7 @@ namespace YourNamespace.Controllers
             var existingTask = await _context.Tasks.FindAsync(id);
             if (existingTask == null)
             {
-                return NotFound(new { Message = "Task not found." });
-            }
-
-            if (string.IsNullOrWhiteSpace(task.Name) || task.Name.Length > 100)
-            {
-                return BadRequest(new { Message = "Nameが無効です（100文字以下で入力してください）。" });
-            }
-
-            if (!string.IsNullOrEmpty(task.Schedule) && task.Schedule.Length > 10)
-            {
-                return BadRequest(new { Message = "Scheduleが無効です（10文字以下で入力してください）。" });
+                return NotFound(new { Message = "タスクが見つかりません。" });
             }
 
             existingTask.Name = task.Name;
@@ -79,7 +58,7 @@ namespace YourNamespace.Controllers
             existingTask.UpdateDate = DateTime.Now;
 
             await _context.SaveChangesAsync();
-            return Ok(new { Message = "Task updated successfully." });
+            return Ok(new { Message = "タスクが正常に更新されました。" });
         }
 
         [HttpPatch("{id}/toggle-complete")]
@@ -92,7 +71,7 @@ namespace YourNamespace.Controllers
 
             if (completeElement.ValueKind != JsonValueKind.True && completeElement.ValueKind != JsonValueKind.False)
             {
-                return BadRequest(new { Message = "'complete' の値が true または falseではありません。" });
+                return BadRequest(new { Message = "'complete' の値が true または false ではありません。" });
             }
 
             bool newComplete = completeElement.GetBoolean();
@@ -100,14 +79,14 @@ namespace YourNamespace.Controllers
             var existingTask = await _context.Tasks.FindAsync(id);
             if (existingTask == null)
             {
-                return NotFound(new { Message = "Task not found." });
+                return NotFound(new { Message = "タスクが見つかりません。" });
             }
 
             existingTask.Complete = newComplete;
             existingTask.UpdateDate = DateTime.Now;
 
             await _context.SaveChangesAsync();
-            return Ok(new { Message = "Task completion state updated successfully." });
+            return Ok(new { Message = "タスクの完了状態が正常に更新されました。" });
         }
 
         [HttpDelete("{id}")]
@@ -116,12 +95,12 @@ namespace YourNamespace.Controllers
             var existingTask = await _context.Tasks.FindAsync(id);
             if (existingTask == null)
             {
-                return NotFound(new { Message = "Task not found." });
+                return NotFound(new { Message = "タスクが見つかりません。" });
             }
 
             _context.Tasks.Remove(existingTask);
             await _context.SaveChangesAsync();
-            return Ok(new { Message = "Task deleted successfully." });
+            return Ok(new { Message = "タスクが正常に削除されました。" });
         }
     }
 }
