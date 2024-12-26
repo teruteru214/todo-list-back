@@ -7,20 +7,24 @@ var connectionString = Environment.GetEnvironmentVariable("SQLCONNSTR_DefaultCon
 
 if (string.IsNullOrEmpty(connectionString))
 {
+    Console.WriteLine("接続文字列が取得できません。環境変数を確認してください。");
     throw new InvalidOperationException("Database connection string is not configured.");
-}
-
-if (builder.Environment.IsDevelopment())
-{
-    Console.WriteLine("Environment: Development");
 }
 else
 {
-    Console.WriteLine("Environment: Production");
+    Console.WriteLine($"接続文字列: {connectionString}");
 }
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+try
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(connectionString));
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"DB接続に失敗: {ex.Message}");
+    throw;
+}
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
