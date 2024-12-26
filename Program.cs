@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = Environment.GetEnvironmentVariable("SQLCONNSTR_DefaultConnection");
+var connectionString = Environment.GetEnvironmentVariable("SQLAZURECONNSTR_DefaultConnection");
 
 if (string.IsNullOrEmpty(connectionString))
 {
